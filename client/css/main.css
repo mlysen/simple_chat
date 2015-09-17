@@ -27,17 +27,6 @@ input:focus {
   text-align: center;
 }
 
-/*.chat-room.ng-hide-remove,
-.chat-messages,
-.user-list {
-  position: relative;
-  -webkit-transition:all linear 15s;
-  transition:all linear 15s;
-  -webkit-transition-delay: 1s;
-  transition-delay: 1s;
-  opacity: 1;
-}*/
-
 .name-form input {
   padding: 5px;
   height: 30px;
@@ -101,7 +90,6 @@ input:focus {
 .chat-message-box {
   width: 395px;
   max-height:470px;
-  /*height: 470px;*/
   position: relative;
   bottom: 0;
 }
