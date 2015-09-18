@@ -6,8 +6,8 @@ var express = require('express'),
     socketIOHandler = socketio.listen(server),
     users = {};
 
-app.use('/js', express.static(path.resolve(path.join(__dirname, '/../client/js'))));
-app.use('/css', express.static(path.resolve(path.join(__dirname, '/../client/css'))));
+app.use('/js', express.static(path.resolve(path.join(__dirname, '/../build/js'))));
+app.use('/css', express.static(path.resolve(path.join(__dirname, '/../build/css'))));
 app.use('/socket.io', express.static(path.join(__dirname, '/socket.io')));
 
 server.listen('3000', function() {
@@ -15,7 +15,7 @@ server.listen('3000', function() {
 });
 
 app.get('/', function(req, res) {
-  res.sendFile(path.resolve(__dirname + '/../client/index.html'));
+  res.sendFile(path.resolve(__dirname + '/../build/index.html'));
 });
 
 

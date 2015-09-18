@@ -7,6 +7,7 @@ This is a test project for me to learn SocketIO, nodejs with express and angular
 ## How does it work.
 
 - Install needed packages by running npm install in root folder.
+- runt grunt to create a runnable build.
 - navigate to server directory.
 - Run `node server.js`
 
