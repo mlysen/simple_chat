@@ -3,9 +3,9 @@
     .module('myApp')
     .controller('ChatController', ChatController);
 
-    ChatController.$inject = ['$scope','socketio', '$animate'];
+    ChatController.$inject = ['socketio', '$animate'];
 
-  function ChatController($scope, socketio, $animate) {
+  function ChatController(socketio, $animate) {
     var vm = this;
 
     var MAXIMUM_CHAT_HISTORY = 30,
@@ -25,7 +25,6 @@
         vm.chatmessages.push(message);
       },
       updateUserList = function(userList) {
-        console.log(userList);
         if (chatAnimationDone) {
           vm.users = userList;
         } else {
@@ -49,7 +48,6 @@
         return;
       }
       socketio.emit('newName', name, function(result) {
-        console.log(JSON.stringify(result));
         if (result.success === true) {
           vm.showEnteringNameDialog = false;
           vm.chatVisible = true;
@@ -76,7 +74,6 @@
     });
 
     socketio.on('chatMessage', function(message) {
-      console.log('message');
       addChatMessage(message);
     });
 
