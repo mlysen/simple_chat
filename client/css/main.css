@@ -124,3 +124,27 @@ input:focus {
 .user-list.ng-leave.ng-leave-active {
   opacity: 0;
 }
+
+.view-animate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.view-animate.ng-enter, .view-animate.ng-leave {
+  transition:left ease-in 0.25s, opacity ease-in 0.2s;
+}
+
+.view-animate.ng-enter {
+  left:25%;
+  opacity: 0;
+}
+.view-animate.ng-enter.ng-enter-active {
+  left:0;
+  opacity: 1;
+}
+.view-animate.ng-leave.ng-leave-active {
+  left:-25%;
+  opacity: 0;
+}

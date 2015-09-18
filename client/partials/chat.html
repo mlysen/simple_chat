@@ -1,0 +1,22 @@
+<div>
+  <div class="chat-room" show-chat="chat.chatVisible" after-show="chat.showChatWindow()">
+    <div class="chat-box-scroller">
+      <div class="chat-message-box">
+        <div class="chat-messages" ng-repeat="message in chat.chatmessages track by $index">
+          <div class="message"> {{ message }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="user-list-box">
+      <div class="user-list" ng-repeat="user in chat.users">
+        <div class="user"> {{ user }}</div>
+      </div>
+    </div>
+    <div class="input-holder">
+      <form novalidate class="chat-form">
+        <input type="text" ng-model="chat.chatMessage" placeholder="Got something on your mind?" />
+        <input type="submit" ng-click="chat.sendChatMessage(chat.chatMessage)" value="Save" style="display:none;" />
+      </form>
+    </div>
+  </div>
+</div>

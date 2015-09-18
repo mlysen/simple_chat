@@ -14,6 +14,7 @@ module.exports = function(grunt) {
         expand: true,
         src: [
           'index.html',
+          'partials/**',
           'css/**'
         ],
         dest: 'build'

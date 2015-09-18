@@ -2,7 +2,8 @@
   angular
     .module('myApp',
       [
-        'ngAnimate'
+        'ngAnimate',
+        'ngRoute'
       ]
   );
 

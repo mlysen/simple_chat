@@ -1,0 +1,7 @@
+<div class="name-form">
+  <h5>{{ main.whatsYourName }}</h5>
+  <form novalidate class="name-form">
+    <input type="text" ng-model="main.name" placeholder="Enter a name here" />
+    <input type="submit" ng-click="main.nameEntered(main.name)" value="Save" style="display:none;" />
+  </form>
+</div>

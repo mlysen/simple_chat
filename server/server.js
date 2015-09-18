@@ -8,6 +8,7 @@ var express = require('express'),
 
 app.use('/js', express.static(path.resolve(path.join(__dirname, '/../build/js'))));
 app.use('/css', express.static(path.resolve(path.join(__dirname, '/../build/css'))));
+app.use('/partials', express.static(path.resolve(path.join(__dirname, '/../build/partials'))));
 app.use('/socket.io', express.static(path.join(__dirname, '/socket.io')));
 
 server.listen('3000', function() {
@@ -24,7 +25,7 @@ socketIOHandler.on('connection', function(socket) {
 
   var userName = "";
 
-  socket.on('newName', function(name, callback) {
+  socket.on('setName', function(name, callback) {
     if (users[name]) {
       callback({ success: false, reason: 'Name is already taken'});
     } else {
@@ -45,6 +46,10 @@ socketIOHandler.on('connection', function(socket) {
     }
 
     userName = null;
+  });
+
+  socket.on('getUsers', function(data, callback) {
+    callback(Object.keys(users));
   });
 
   socket.on('chatMessage', function(data) {

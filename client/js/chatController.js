@@ -3,28 +3,39 @@
     .module('myApp')
     .controller('ChatController', ChatController);
 
-    ChatController.$inject = ['socketio', '$animate'];
+    ChatController.$inject = ['$location', 'socketio', '$animate', 'userFactory'];
 
-  function ChatController(socketio, $animate) {
+  function ChatController($location, socketio, $animate, userFactory) {
     var vm = this;
 
     var MAXIMUM_CHAT_HISTORY = 30,
-      chatAnimationDone = false,
-      tempUserList;
+      chatAnimationDone = false;
 
-    vm.chatmessages = [];
-    vm.users = [];
-    vm.whatsYourName = "Sup, what's your name?";
-    vm.clock = "";
+    init();
+
+    function init() {
+      vm.chatmessages = [];
+      vm.users = [];
+      vm.clock = "";
+      vm.chatVisible = true;
+      vm.name = userFactory.getName();
+
+    }
 
     var addChatMessage = function(message) {
         if (vm.chatmessages.length > MAXIMUM_CHAT_HISTORY) {
           vm.chatmessages.shift();
         }
 
+        // 00:00
+        var time = (new Date()).toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+
+        message = time + ' ' + message;
+
         vm.chatmessages.push(message);
       },
       updateUserList = function(userList) {
+        console.log('updateUserList');
         if (chatAnimationDone) {
           vm.users = userList;
         } else {
@@ -35,57 +46,19 @@
     vm.showChatWindow = function() {
       chatAnimationDone = true;
 
-      if (tempUserList) {
-        updateUserList(tempUserList);
-        tempUserList = null;
-      }
+      socketio.getUsers(updateUserList);
     }
-
-    vm.nameEntered = function(name) {
-      // We should hide the name entering information.
-      if (!name) {
-        vm.whatsYourName = "Really, you don't have a name? Come on.";
-        return;
-      }
-      socketio.emit('newName', name, function(result) {
-        if (result.success === true) {
-          vm.showEnteringNameDialog = false;
-          vm.chatVisible = true;
-        } else {
-          vm.whatsYourName = result.reason;
-        }
-      });
-    };
 
     vm.sendChatMessage = function(message) {
         vm.chatMessage = "";
 
         if (message) {
-          socketio.emit('chatMessage', { user: vm.name, message: message });
+          socketio.sendChatMessage({ user: vm.name, message: message });
         }
     };
 
-    socketio.on('newUser', function(userList) {
-      updateUserList(userList);
-    });
-
-    socketio.on('userDisconnected', function(userList) {
-      updateUserList(userList);
-    });
-
-    socketio.on('chatMessage', function(message) {
-      addChatMessage(message);
-    });
-
-    // Clock
-    var updateClock = function() {
-      vm.clock = (new Date()).toLocaleTimeString();
-    };
-
-    var timer = setInterval(function() {
-      updateClock(vm);
-    }, 1000);
-
-    updateClock();
+    socketio.onNewUser(updateUserList);
+    socketio.onUserDisconnect(updateUserList);
+    socketio.onChatMessage(addChatMessage);
   }
 })();
