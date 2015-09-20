@@ -1,5 +1,5 @@
 (function() {
-  
+
   angular.
     module('myApp').
     controller('MainController', MainController);
@@ -9,22 +9,19 @@
     function MainController($location, socketio, userFactory) {
       var vm = this;
 
-      vm.whatsYourName = "Sup, what's your name?";
+      vm.whatsYourName = 'Sup, what\'s your name?';
 
       init();
 
       function init() {
         console.log('INIT');
-        vm.whatsYourName = "Sup, what's your name?";
-
-        // Reconnect socket if we've gone back in history.
-        console.log($location.history);
+        vm.whatsYourName = 'Sup, what\'s your name?';
       }
 
       vm.nameEntered = function(name) {
         // We should hide the name entering information.
         if (!name) {
-          vm.whatsYourName = "Really, you don't have a name? Come on.";
+          vm.whatsYourName = 'Really, you don\'t have a name? Come on.';
           return;
         }
 

@@ -13,6 +13,7 @@
     socketio.onChatMessage = onChatMessage;
     socketio.onUserDisconnect = onUserDisconnect;
     socketio.getUsers = getUsers;
+    socketio.getChatHistory = getChatHistory;
     socketio.connect = connect;
     socketio.disconnect = disconnect;
 
@@ -71,6 +72,10 @@
 
     function sendChatMessage(message) {
       socketEmit('chatMessage', message);
+    }
+
+    function getChatHistory(callback) {
+      socketEmit('getChatHistory', null, callback);
     }
   }
 })();

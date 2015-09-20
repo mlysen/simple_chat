@@ -1,11 +1,24 @@
 var express = require('express'),
+    mongoose = require('mongoose'),
     path = require('path'),
     app = express(),
     server = require('http').createServer(app),
     socketio = require('socket.io'),
     socketIOHandler = socketio.listen(server),
-    users = {};
+    users = {},
+    chatMessageSchema,
+    chatMessageModel;
 
+// Mongoose Configuration
+mongoose.connect('mongodb://localhost/simple_chat');
+
+chatMessageSchema = new mongoose.Schema({
+  message: String
+});
+
+chatMessageModel = mongoose.model('chat_messages', chatMessageSchema);
+
+// Server Configurations
 app.use('/js', express.static(path.resolve(path.join(__dirname, '/../build/js'))));
 app.use('/css', express.static(path.resolve(path.join(__dirname, '/../build/css'))));
 app.use('/partials', express.static(path.resolve(path.join(__dirname, '/../build/partials'))));
@@ -19,11 +32,17 @@ app.get('/', function(req, res) {
   res.sendFile(path.resolve(__dirname + '/../build/index.html'));
 });
 
+app.get('/db/', function(req, res) {
+  mongoose.model('chat_messages').find(function(err, chatMessages) {
+    res.send(chatMessages);
+  });
+});
+
 
 socketIOHandler.on('connection', function(socket) {
   console.log('Client connected');
 
-  var userName = "";
+  var userName = '';
 
   socket.on('setName', function(name, callback) {
     if (users[name]) {
@@ -53,6 +72,40 @@ socketIOHandler.on('connection', function(socket) {
   });
 
   socket.on('chatMessage', function(data) {
-    socketIOHandler.emit('chatMessage', data.user + ': ' + data.message);
+    var chatMessage = data.user + ': ' + data.message,
+        mongoDbMessage = new chatMessageModel({
+          message: chatMessage
+        });
+
+    socketIOHandler.emit('chatMessage', chatMessage);
+
+    mongoDbMessage.save(function(err, product, numberAffected) {
+      if (err) console.log('DB ERR: ' + err);
+      console.log('DB save successful');
+    });    
   });
+
+  socket.on('getChatHistory', function(data, callback) {
+    getChatHistory().then(function(messages) {
+      callback(messages);
+    }).error(function() {
+      callback([]);
+    });
+  });
+
+  function getChatHistory(socket) {
+    var messages;
+
+    return mongoose.model('chat_messages').find().then(function(chatMessages) {
+      messages = chatMessages.map(function(obj) {
+        return obj.message;
+      })
+
+      console.log(messages);
+
+      return messages;
+    }).error(function() {
+      console.log('Error retreiving chat_messages');
+    });
+  }
 });

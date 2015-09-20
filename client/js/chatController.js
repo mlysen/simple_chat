@@ -16,23 +16,27 @@
     function init() {
       vm.chatmessages = [];
       vm.users = [];
-      vm.clock = "";
+      vm.clock = '';
       vm.chatVisible = true;
       vm.name = userFactory.getName();
 
     }
 
     var addChatMessage = function(message) {
-        if (vm.chatmessages.length > MAXIMUM_CHAT_HISTORY) {
-          vm.chatmessages.shift();
+        var exceedAmount = 0;
+
+        if (!message) return;
+
+        if (message.shift) {
+          vm.chatmessages = vm.chatmessages.concat(message);
+        } else {
+          vm.chatmessages.push(message);
         }
 
-        // 00:00
-        var time = (new Date()).toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
-
-        message = time + ' ' + message;
-
-        vm.chatmessages.push(message);
+        if (vm.chatmessages.length > MAXIMUM_CHAT_HISTORY) {
+          exceedAmount = vm.chatmessages.length - MAXIMUM_CHAT_HISTORY;
+          vm.chatmessages.splice(0, exceedAmount);
+        }
       },
       updateUserList = function(userList) {
         console.log('updateUserList');
@@ -47,10 +51,11 @@
       chatAnimationDone = true;
 
       socketio.getUsers(updateUserList);
+      socketio.getChatHistory(addChatMessage);
     }
 
     vm.sendChatMessage = function(message) {
-        vm.chatMessage = "";
+        vm.chatMessage = '';
 
         if (message) {
           socketio.sendChatMessage({ user: vm.name, message: message });

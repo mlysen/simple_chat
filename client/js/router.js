@@ -17,7 +17,6 @@
           templateUrl: 'partials/chat.html',
           controller: 'ChatController',
           controllerAs: 'chat'
-        }).
-        otherwise('/');
+        });
     }
 })();

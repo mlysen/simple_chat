@@ -4,7 +4,12 @@
 
 This is a test project for me to learn SocketIO, nodejs with express and angularJS.
 
+- Addition, simple mongoDB functionality as well.
+
 ## How does it work.
+
+- Have mongoDB installed with a database called `simple_chat`.
+- create a collection for `simple_chat` called `chat_messages`.
 
 - Install needed packages by running npm install in root folder.
 - runt grunt to create a runnable build.
